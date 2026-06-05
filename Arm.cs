@@ -1,8 +1,10 @@
+using System;
 using Godot;
+using MathNet.Numerics.Differentiation;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
-using System;
 
+[GlobalClass]
 public partial class Arm : Node3D
 {
     [ExportCategory("Joints")]
@@ -20,12 +22,28 @@ public partial class Arm : Node3D
     [ExportCategory("Qs")]
     [Export]
     public float Theta1 { get; set; }
+    public void SetTheta1(float value)
+    {
+        Theta1 = value;
+    }
     [Export]
     public float Theta2 { get; set; }
+    public void SetTheta2(float value)
+    {
+        Theta2 = value;
+    }
     [Export]
     public float D3 { get; set; }
+    public void SetD3(float value)
+    {
+        D3 = value;
+    }
     [Export]
     public float Theta4 { get; set; }
+    public void SetTheta4(float value)
+    {
+        Theta4 = value;
+    }
 
     [ExportCategory("Parameters")]
     [Export]
@@ -37,7 +55,7 @@ public partial class Arm : Node3D
     [Export]
     public float D4 { get; set; } = 3;
 
-    public DenseMatrix GetZRotateMatrix(float theta)
+    public DenseMatrix GetZRotateMatrix(double theta)
     {
         var mat = DenseMatrix.OfArray(new double[4, 4] {
             {Math.Cos(theta), -Math.Sin(theta), 0, 0},
@@ -47,7 +65,7 @@ public partial class Arm : Node3D
         });
         return mat;
     }
-    public DenseMatrix GetXRotateMatrix(float alpha)
+    public DenseMatrix GetXRotateMatrix(double alpha)
     {
         var mat = DenseMatrix.OfArray(new double[4, 4] {
             {1, 0, 0, 0},
@@ -57,7 +75,7 @@ public partial class Arm : Node3D
         });
         return mat;
     }
-    public DenseMatrix GetDTranslateMatrix(float d)
+    public DenseMatrix GetDTranslateMatrix(double d)
     {
         var mat = DenseMatrix.OfArray(new double[4, 4] {
             {1, 0, 0, 0},
@@ -67,7 +85,7 @@ public partial class Arm : Node3D
         });
         return mat;
     }
-    public DenseMatrix GetATranslateMatrix(float a)
+    public DenseMatrix GetATranslateMatrix(double a)
     {
         var mat = DenseMatrix.OfArray(new double[4, 4] {
             {1, 0, 0, a},
@@ -77,7 +95,7 @@ public partial class Arm : Node3D
         });
         return mat;
     }
-    public DenseMatrix GetHMatrix(float theta, float d, float a, float alpha)
+    public DenseMatrix GetHMatrix(double theta, double d, double a, double alpha)
     {
         var zRotate = GetZRotateMatrix(theta);
         var dTranslate = GetDTranslateMatrix(d);
@@ -88,21 +106,60 @@ public partial class Arm : Node3D
         return hMatrix;
     }
 
+
     public void UpdateJointTransform(Node3D joint, DenseMatrix transform)
     {
-        var basis = new Basis();
-        
-        var xAxis = new Vector3((float)transform[0, 0], (float)transform[1, 0], (float)transform[2, 0]);
-        var yAxis = new Vector3((float)transform[0, 1], (float)transform[1, 1], (float)transform[2, 1]);
-        var zAxis = new Vector3((float)transform[0, 2], (float)transform[1, 2], (float)transform[2, 2]);
+        var basis = new Basis
+        {
+            X = new Vector3((float)transform[0, 0], (float)transform[1, 0], (float)transform[2, 0]),
+            Y = new Vector3((float)transform[0, 1], (float)transform[1, 1], (float)transform[2, 1]),
+            Z = new Vector3((float)transform[0, 2], (float)transform[1, 2], (float)transform[2, 2])
+        };
 
-        basis.X = xAxis; 
-        basis.Y = yAxis;
-        basis.Z = zAxis;
-
-        var origin = new Vector3((float)transform[0, 3], (float)transform[1, 3], (float)transform[2, 3]);
+        var origin = new Vector3((float)transform[1, 3], (float)transform[2, 3], (float)transform[0, 3]);
         joint.GlobalTransform = new Transform3D(basis, origin);
+
+        joint.RotateX(-Mathf.DegToRad(90));
+        joint.RotateY(-Mathf.DegToRad(90));
     }
+
+    // q=[theta1, theta2, d3, theta4]
+    public DenseMatrix GetEETaskX(double[] q)
+    {
+        var h01 = GetHMatrix(0, H, 0, 0);
+        var h12 = GetHMatrix(q[0], 0, A1, 0);
+        var h23 = GetHMatrix(q[1], 0, A2, 0);
+        var h34 = GetHMatrix(0, -q[2], 0, 0);
+        var h4E = GetHMatrix(q[3], -D4, 0, 0);
+
+        var EETransform = h01 * h12 * h23 * h34 * h4E;
+
+        var xe = DenseMatrix.OfArray(new double[4, 1] {
+            {EETransform[0, 3]}, //X
+            {EETransform[1, 3]}, //Y
+            {EETransform[2, 3]}, //Z
+            {q[0] + q[1] + q[3]} //Phi
+        });
+
+        return xe;
+    }
+
+    public DenseMatrix GetJacobian(double[] q)
+    {
+        var Jacobian = new NumericalJacobian();
+
+        Func<double[], double>[] f =
+        {
+            qq => GetEETaskX(qq)[0, 0], // x(q)
+            qq => GetEETaskX(qq)[1, 0], // y(q)
+            qq => GetEETaskX(qq)[2, 0], // z(q)
+            qq => GetEETaskX(qq)[3, 0]  // phi(q)
+        };
+
+        var j = Jacobian.Evaluate(f, q);
+        return DenseMatrix.OfArray(j);
+    }
+
 
     public override void _Process(double delta)
     {
@@ -113,33 +170,25 @@ public partial class Arm : Node3D
             {0, 0, 0, 1}
         });
 
-        var H01 = GetHMatrix(Theta1, 0, A1, 0);
-        var joint1Transform = baseTransform * H01; 
-        UpdateJointTransform(Joint1, joint1Transform);
-        // GD.Print($"Joint 1 Transform: {joint1Transform}");
+        var H01 = GetHMatrix(0, H, 0, 0);
+        var joint1Transform = baseTransform * H01;
 
-        var H12 = GetHMatrix(Theta2, 0, A2, 0);
+        UpdateJointTransform(Joint1, joint1Transform);
+
+        var H12 = GetHMatrix(Theta1, 0, A1, 0);
         var joint2Transform = joint1Transform * H12;
         UpdateJointTransform(Joint2, joint2Transform);
 
-        var H23 = GetHMatrix(0, -D3, 0, 0);
+        var H23 = GetHMatrix(Theta2, 0, A2, 0);
         var joint3Transform = joint2Transform * H23;
         UpdateJointTransform(Joint3, joint3Transform);
 
-        var H34 = GetHMatrix(Theta4, -D4, 0, 0);
+        var H34 = GetHMatrix(0, -D3, 0, 0);
         var joint4Transform = joint3Transform * H34;
         UpdateJointTransform(Joint4, joint4Transform);
 
-        // var H12 = GetHMatrix(Theta2, 0, A2, 0);
-        // var joint2Transform = joint1Transform * H12;
-        // UpdateJointTransform(Joint2, joint2Transform);
-
-        // var H23 = GetHMatrix(0, -D3, 0, 0);
-        // var joint3Transform = joint2Transform * H23;
-        // UpdateJointTransform(Joint3, joint3Transform);
-
-        // var H34 = GetHMatrix(Theta4, -D4, 0, 0);
-        // var joint4Transform = joint3Transform * H34;
-        // UpdateJointTransform(Joint4, joint4Transform);
+        var H4E = GetHMatrix(Theta4, -D4, 0, 0);
+        var endEffectorTransform = joint4Transform * H4E;
+        UpdateJointTransform(EndEffector, endEffectorTransform);
     }
 }

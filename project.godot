@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="RRPR SCARA manipulator"
-run/main_scene="uid://cdjv863ip6sj6"
+run/main_scene="uid://dcecc3agcqoy4"
 config/features=PackedStringArray("4.6", "C#", "GL Compatibility")
 config/icon="res://icon.svg"
 

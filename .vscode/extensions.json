@@ -1,0 +1,22 @@
+{
+  "recommendations": [
+    "alfish.godot-files",
+    "christian-kohler.path-intellisense",
+    "DavidAnson.vscode-markdownlint",
+    "EditorConfig.EditorConfig",
+    "gurumukhi.selected-lines-count",
+    "jjkim.gdscript",
+    "ms-dotnettools.csharp",
+    "selcukermaya.se-csproj-extensions",
+    "streetsidesoftware.code-spell-checker",
+    "VisualStudioExptTeam.vscodeintellicode",
+
+    "MS-CEINTL.vscode-language-pack-zh-hans",
+    "janisdd.vscode-edit-csv",
+    "Mebrahtom.plantumlpreviewer",
+    "mechatroner.rainbow-csv",
+    "GitHub.copilot",
+    "GitHub.copilot-chat",
+    "Gruntfuggly.todo-tree",
+  ]
+}

@@ -1,0 +1,488 @@
+{
+  // Place your workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and
+  // description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope
+  // is left empty or omitted, the snippet gets applied to all languages. The prefix is what is
+  // used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+  // $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders.
+  // Placeholders with the same ids are connected.
+  // Example:
+  // "Print to console": {
+  //   "scope": "javascript,typescript",
+  //   "prefix": "log",
+  //   "body": [
+  //     "console.log('$1');",
+  //     "$2"
+  //   ],
+  //   "description": "Log output to console"
+  // }
+  "qwqsoft Node Property Regions": {
+    "scope": "csharp",
+    "isFileTemplate": true,
+    "prefix": [
+      "property-regions",
+      "preg"
+    ],
+    "body": [
+      "#region Provisions",
+      "#endregion",
+      "#region Dependencies",
+      "#endregion",
+      "#region States",
+      "#endregion",
+      "#region Exports",
+      "#endregion",
+      "#region Signals",
+      "#endregion",
+      "#region Nodes",
+      "#endregion",
+      "#region Properties",
+      "#endregion",
+      "#region Methods",
+      "#endregion",
+      "#region Overrides",
+      "#endregion",
+    ],
+    "description": "qwqsoft Node Property Regions"
+  },
+  "qwqsoft Godot Node Test Template": {
+    "scope": "csharp",
+    "prefix": [
+      "godot-node-test",
+      "nodetestclass"
+    ],
+    "body": [
+      "namespace ${1:$WORKSPACE_NAME}.Tests;",
+      "using Shouldly;",
+      "using Chickensoft.GoDotTest;",
+      "using Chickensoft.GodotTestDriver;",
+      "using Chickensoft.GodotTestDriver.Drivers;",
+      "using Godot;",
+      "using Chickensoft.Log;",
+      "using System.Threading.Tasks;",
+      "",
+      "public class ${2:$TM_FILENAME_BASE} : TestClass {",
+      "  private ${3:NodeType} _node = default!;",
+      "  private Fixture _fixture = default!;",
+      "  private readonly ILog _log = new Log(nameof(${2:$TM_FILENAME_BASE}), new TraceWriter());",
+      "",
+      "  public ${2:$TM_FILENAME_BASE}(Node testScene) : base(testScene) { }",
+      "",
+      "  [SetupAll]",
+      "  public async Task Setup() {",
+      "    _fixture = new Fixture(TestScene.GetTree());",
+      "    _node = await _fixture.LoadAndAddScene<${2:NodeType}>();",
+      "    _log.Print(\"SetupAll completed\");",
+      "  }",
+      "",
+      "  [CleanupAll]",
+      "  public void Cleanup() {",
+      "    _fixture.Cleanup();",
+      "    _log.Print(\"CleanupAll completed\");",
+      "  }",
+      "",
+      "  [Test]",
+      "  public void ${3:TestName}() {",
+      "    _log.Print(\"Test started: ${3:TestName}\");",
+      "    // Arrange",
+      "    ",
+      "    // Act",
+      "    ",
+      "    // Assert",
+      "    ",
+      "    _log.Print(\"Test finished: ${3:TestName}\");",
+      "  }",
+      "}"
+    ],
+    "description": "qwqsoft Godot C# TestClass template with logging"
+  },
+  "qwqsoft Godot Test Template": {
+    "scope": "csharp",
+    "prefix": [
+      "godot-test",
+      "testclass"
+    ],
+    "body": [
+      "namespace ${1:$WORKSPACE_NAME}.Tests;",
+      "using Chickensoft.GoDotTest;",
+      "using Chickensoft.Log;",
+      "using Godot;",
+      "",
+      "public class ${2:$TM_FILENAME_BASE} : TestClass {",
+      "  private readonly ILog _log = new Log(nameof(${2:$TM_FILENAME_BASE}), new TraceWriter());",
+      "",
+      "  public ${2:$TM_FILENAME_BASE}(Node testScene) : base(testScene) { }",
+      "",
+      "  [SetupAll]",
+      "  public void SetupAll() => _log.Print(\"Setup everything\");",
+      "",
+      "  [Setup]",
+      "  public void Setup() => _log.Print(\"Setup\");",
+      "",
+      "  [Test]",
+      "  public void Test() => _log.Print(\"Test\");",
+      "",
+      "  [Cleanup]",
+      "  public void Cleanup() => _log.Print(\"Cleanup\");",
+      "",
+      "  [CleanupAll]",
+      "  public void CleanupAll() => _log.Print(\"Cleanup everything\");",
+      "",
+      "  [Failure]",
+      "  public void Failure() =>",
+      "    _log.Print(\"Runs whenever any of the tests in this suite fail.\");",
+      "}"
+    ],
+    "description": "qwqsoft Godot C# TestClass template with logging"
+  },
+  "qwqsoft Godot LogicBlock Test Template": {
+    "scope": "csharp",
+    "prefix": [
+      "lb-test",
+      "logicblock-test"
+    ],
+    "body": [
+      "namespace ${1:$WORKSPACE_NAME}.Tests;",
+      "using Chickensoft.GoDotTest;",
+      "using Godot;",
+      "using Shouldly;",
+      "",
+      "public class ${2:$TM_FILENAME_BASE} : TestClass {",
+      "  private ${3:${TM_FILENAME_BASE/(.*)Test$/$1/}} _logic = default!;",
+      "",
+      "  public ${2:$TM_FILENAME_BASE}(Node testScene) : base(testScene) { }",
+      "",
+      "  [Setup]",
+      "  public void Setup() {",
+      "    _logic = new ${3:${TM_FILENAME_BASE/(.*)Test$/$1/}}();",
+      "  }",
+      "",
+      "  [Test]",
+      "  public void Initializes() {",
+      "    _logic",
+      "      .GetInitialState().State",
+      "      .ShouldBeAssignableTo<${3:${TM_FILENAME_BASE/(.*)Test$/$1/}}.State>();",
+      "  }",
+      "}"
+    ],
+    "description": "Godot LogicBlock test class template with workspace namespace"
+  },
+    "qwqsoft Godot State Test Template": {
+    "scope": "csharp",
+    "prefix": [
+      "st-test",
+      "state-test"
+    ],
+    "body": [
+      "namespace ${1:$WORKSPACE_NAME}.Tests;",
+      "using Chickensoft.GoDotTest;",
+      "using Chickensoft.Introspection;",
+      "using Chickensoft.LogicBlocks;",
+      "using Chickensoft.Log;",
+      "using Godot;",
+      "using Shouldly;",
+      "",
+      "public partial class ${2:${TM_FILENAME_BASE}} : TestClass {",
+      "  [Meta, TestState]",
+      "  public partial record TestBeatmapPlayerState : ${3:${TM_FILENAME_BASE/(.*)Test$/$1/}};",
+      "  private readonly ILog _log = new Log(nameof(BeatmapPlayerTest), new TraceWriter());",
+      "  private IFakeContext _context = default!;",
+      "  private ${3:${TM_FILENAME_BASE/(.*)Test$/$1/}} _state = default!;",
+      "",
+      "  public ${2:${TM_FILENAME_BASE}} (Node testScene) : base(testScene) { }",
+      "",
+      "  [Setup]",
+      "  public void Setup() {",
+      "    _state = new();",
+      "    _context = _state.CreateFakeContext();",
+      "  }",
+      "",
+      "  [Test]",
+      "  public void Enters() {",
+      "  }",
+      "}"
+    ],
+    "description": "Godot PlayerLogic test class template with workspace namespace"
+  },
+  "qwqsoft Godot Resource Template": {
+    "scope": "csharp",
+    "prefix": [
+      "godot-resource",
+      "resclass"
+    ],
+    "body": [
+      "namespace ${1:$WORKSPACE_NAME};",
+      "",
+      "using Godot;",
+      "",
+      "[GlobalClass]",
+      "public partial class ${2:$TM_FILENAME_BASE} : Resource {",
+      "  ",
+      "}"
+    ],
+    "description": "qwqsoft Godot C# Resource class template"
+  },
+  "qwqsoft Create Console Log Output": {
+    "scope": "csharp",
+    "prefix": [
+      "createlog",
+      "newlog",
+      "consolelog"
+    ],
+    "body": [
+      "private ILog _log = new Log(nameof(${1:${TM_FILENAME_BASE/.*\\.//}}), new GDWriter());"
+    ],
+    "description": "Create a new ILog instance with GDWriter"
+  },
+  "qwqsoft Custom File Log Template": {
+    "scope": "csharp",
+    "prefix": [
+      "filelog",
+      "customfilelog"
+    ],
+    "body": [
+      "  private ILog _log = new Log(nameof(${1:$TM_FILENAME_BASE}),",
+      "    GDFileWriter.Instance(\"user://${2:Game}.log\"));",
+    ],
+    "description": "C# class with ILog writing to a custom file using GDFileWriter"
+  },
+  "qwqsoft Log Reference": {
+    "scope": "csharp",
+    "prefix": [
+      "logref",
+      "logusing"
+    ],
+    "body": [
+      "using Chickensoft.Log;",
+      "using Chickensoft.Log.Godot;"
+    ],
+    "description": "Add Chickensoft.Log and Chickensoft.Log.Godot using directives"
+  },
+  "qwqsoft Game Debug Log": {
+    "scope": "csharp",
+    "prefix": [
+      "log-debug",
+      "logd"
+    ],
+    "body": [
+      "_log.Print($\"[DEBUG] ${1:message}: {${2:variable}}\");"
+    ],
+    "description": "Debug log with variable interpolation"
+  },
+  "qwqsoft Game Error Log": {
+    "scope": "csharp",
+    "prefix": [
+      "log-error",
+      "loge"
+    ],
+    "body": [
+      "_log.Err($\"[ERROR] ${1:operation} failed: {${2:error}}\");"
+    ],
+    "description": "Error log for game operations"
+  },
+  "qwqsoft Game Performance Log": {
+    "scope": "csharp",
+    "prefix": [
+      "log-perf",
+      "logp"
+    ],
+    "body": [
+      "var stopwatch = System.Diagnostics.Stopwatch.StartNew();",
+      "${1:// operation code}",
+      "stopwatch.Stop();",
+      "_log.Print($\"[PERF] ${2:operation} took {stopwatch.ElapsedMilliseconds}ms\");"
+    ],
+    "description": "Performance timing log"
+  },
+  "qwqsoft Game State Log": {
+    "scope": "csharp",
+    "prefix": [
+      "log-state",
+      "logs"
+    ],
+    "body": [
+      "_log.Print($\"[STATE] ${1:StateName}: ${2:fromState} → ${3:toState}\");"
+    ],
+    "description": "Game state transition log"
+  },
+  "qwqsoft Player Action Log": {
+    "scope": "csharp",
+    "prefix": [
+      "log-player",
+      "logpl"
+    ],
+    "body": [
+      "_log.Print($\"[PLAYER] ${1:action} - Position: {${2:position}}, Score: {${3:score}}\");"
+    ],
+    "description": "Player action and stats log"
+  },
+  "qwqsoft Audio Log": {
+    "scope": "csharp",
+    "prefix": [
+      "log-audio",
+      "loga"
+    ],
+    "body": [
+      "_log.Print($\"[AUDIO] ${1:event} - Sound: {${2:soundName}}, Volume: {${3:volume}}\");"
+    ],
+    "description": "Audio system log"
+  },
+  "qwqsoft Beatmap Log": {
+    "scope": "csharp",
+    "prefix": [
+      "log-beatmap",
+      "logb"
+    ],
+    "body": [
+      "_log.Print($\"[BEATMAP] ${1:event} - Time: {${2:currentTime}}, BPM: {${3:bpm}}, Notes: {${4:noteCount}}\");"
+    ],
+    "description": "Beatmap/rhythm game specific log"
+  },
+  "qwqsoft Input Log": {
+    "scope": "csharp",
+    "prefix": [
+      "log-input",
+      "logi"
+    ],
+    "body": [
+      "_log.Print($\"[INPUT] ${1:inputType}: {${2:inputValue}} at {Time.GetTicksMsec()}ms\");"
+    ],
+    "description": "Input timing log for rhythm games"
+  },
+  "qwqsoft Score Log": {
+    "scope": "csharp",
+    "prefix": [
+      "log-score",
+      "logsc"
+    ],
+    "body": [
+      "_log.Print($\"[SCORE] ${1:event} - Points: {${2:points}}, Combo: {${3:combo}}, Accuracy: {${4:accuracy}}%\");"
+    ],
+    "description": "Score and combo tracking log"
+  },
+  "qwqsoft Loading Log": {
+    "scope": "csharp",
+    "prefix": [
+      "log-load",
+      "logl"
+    ],
+    "body": [
+      "_log.Print($\"[LOADING] ${1:resource} - Progress: {${2:progress}}% ({${3:current}}/{${4:total}})\");"
+    ],
+    "description": "Resource loading progress log"
+  },
+  "qwqsoft Network Log": {
+    "scope": "csharp",
+    "prefix": [
+      "log-net",
+      "logn"
+    ],
+    "body": [
+      "_log.Print($\"[NETWORK] ${1:event} - ${2:details} (Latency: {${3:latency}}ms)\");"
+    ],
+    "description": "Network events and latency log"
+  },
+  "qwqsoft Physics Log": {
+    "scope": "csharp",
+    "prefix": [
+      "log-physics",
+      "logph"
+    ],
+    "body": [
+      "_log.Print($\"[PHYSICS] ${1:event} - Body: {${2:bodyName}}, Velocity: {${3:velocity}}, Position: {${4:position}}\");"
+    ],
+    "description": "Physics simulation log"
+  },
+  "qwqsoft Game Loop Log": {
+    "scope": "csharp",
+    "prefix": [
+      "log-loop",
+      "logloop"
+    ],
+    "body": [
+      "_log.Print($\"[GAMELOOP] Frame: {Engine.GetProcessFrames()}, FPS: {Engine.GetFramesPerSecond()}, Delta: {${1:delta}}\");"
+    ],
+    "description": "Game loop and performance metrics"
+  },
+  "qwqsoft Method Entry Log": {
+    "scope": "csharp",
+    "prefix": [
+      "log-enter",
+      "logen"
+    ],
+    "body": [
+      "_log.Print($\"[ENTER] {nameof(${1:MethodName})}({${2:parameters}})\");"
+    ],
+    "description": "Method entry point log"
+  },
+  "qwqsoft Method Exit Log": {
+    "scope": "csharp",
+    "prefix": [
+      "log-exit",
+      "logex"
+    ],
+    "body": [
+      "_log.Print($\"[EXIT] {nameof(${1:MethodName})} → {${2:result}}\");"
+    ],
+    "description": "Method exit and return value log"
+  },
+  "qwqsoft Stack Trace": {
+    "scope": "csharp",
+    "prefix": [
+      "stacktrace",
+      "stktrc"
+    ],
+    "body": [
+      "var stackTrace = new System.Diagnostics.StackTrace();",
+      "_log.Print(stackTrace.ToString());"
+    ],
+    "description": "Prints the current stack trace using System.Diagnostics.StackTrace"
+  },
+  "qwqsoft State Constructor": {
+    "scope": "csharp",
+    "prefix": [
+      "stateconstructor",
+      "stcst"
+    ],
+    "body": [
+      "public ${1:${TM_FILENAME_BASE/.*\\.//}}() {",
+      "  this.OnEnter(() => {${2:EnterMethod}});",
+      "  this.OnExit(() => {${3:ExitMethod}});",
+      "  OnAttach(() => {${4:AttachMethod}});",
+      "  OnDetach(() => {${5:DetachMethod}});",
+      "}"
+    ],
+    "description": "Prints the current stack trace using System.Diagnostics.StackTrace"
+  }
+  ,
+  "qwqsoft Godot Node Override Methods": {
+    "scope": "csharp",
+    "prefix": [
+      "godot-overrides",
+      "nodeoverrides"
+    ],
+    "body": [
+      "public void OnEnterTree() {",
+      "",
+      "}",
+      "public void Setup() {",
+      "",
+      "}",
+      "public void OnReady() {",
+      "",
+      "}",
+      "public void OnResolved() {",
+      "",
+      "}",
+      "public void OnProcess(double delta) {",
+      "",
+      "}",
+      "public void OnPhysicsProcess(double delta) {",
+      "",
+      "}",
+      "public void OnExitTree() {",
+      "",
+      "}"
+    ],
+    "description": "Godot Node override method stubs"
+  }
+}

@@ -1,0 +1,69 @@
+[gd_scene format=3 uid="uid://dcecc3agcqoy4"]
+
+[ext_resource type="Script" uid="uid://0mh7qup573xu" path="res://Main.cs" id="1_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://cdjv863ip6sj6" path="res://arm.tscn" id="1_ig7tw"]
+
+[node name="Main" type="Node" unique_id=671110331]
+script = ExtResource("1_0xm2m")
+
+[node name="Arm" parent="." unique_id=1457094214 instance=ExtResource("1_ig7tw")]
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1402975]
+transform = Transform3D(0.87758255, -0.22984886, 0.4207355, 0, 0.87758255, 0.47942555, -0.47942555, -0.4207355, 0.77015114, 16.75137, 19.088085, 30.663176)
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1082482038]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -76.0
+offset_right = 256.0
+grow_vertical = 0
+theme_override_constants/margin_left = 64
+theme_override_constants/margin_top = 64
+theme_override_constants/margin_right = 64
+theme_override_constants/margin_bottom = 64
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=459821806]
+layout_mode = 2
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer" unique_id=2021159695]
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+min_value = -6.28
+max_value = 6.28
+step = 0.1
+value = -0.28000000000000025
+
+[node name="HSlider2" type="HSlider" parent="MarginContainer/VBoxContainer" unique_id=483517579]
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+min_value = -6.28
+max_value = 6.28
+step = 0.1
+value = -0.28000000000000025
+
+[node name="HSlider3" type="HSlider" parent="MarginContainer/VBoxContainer" unique_id=1021359426]
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+max_value = 10.0
+
+[node name="HSlider4" type="HSlider" parent="MarginContainer/VBoxContainer" unique_id=678461110]
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+min_value = -6.28
+max_value = 6.28
+step = 0.1
+value = -0.28000000000000025
+
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/HSlider" to="Arm" method="SetTheta1"]
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/HSlider2" to="Arm" method="SetTheta2"]
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/HSlider3" to="Arm" method="SetD3"]
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/HSlider4" to="Arm" method="SetTheta4"]
