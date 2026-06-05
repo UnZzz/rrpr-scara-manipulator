@@ -2,9 +2,20 @@
 
 [ext_resource type="Script" uid="uid://0mh7qup573xu" path="res://Main.cs" id="1_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://cdjv863ip6sj6" path="res://arm.tscn" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://cdkvgfpajr08m" path="res://frame.tscn" id="3_h2yge"]
 
-[node name="Main" type="Node" unique_id=671110331]
+[sub_resource type="SphereMesh" id="SphereMesh_1bvp3"]
+radius = 1.0
+height = 2.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lquwl"]
+shading_mode = 0
+albedo_color = Color(1, 0, 1, 1)
+
+[node name="Main" type="Node" unique_id=671110331 node_paths=PackedStringArray("Arm", "Target")]
 script = ExtResource("1_0xm2m")
+Arm = NodePath("Arm")
+Target = NodePath("Target")
 
 [node name="Arm" parent="." unique_id=1457094214 instance=ExtResource("1_ig7tw")]
 
@@ -31,39 +42,87 @@ custom_minimum_size = Vector2(256, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
-min_value = -6.28
-max_value = 6.28
-step = 0.1
-value = -0.28000000000000025
+min_value = -20.0
+max_value = 20.0
+step = 0.2
 
 [node name="HSlider2" type="HSlider" parent="MarginContainer/VBoxContainer" unique_id=483517579]
 custom_minimum_size = Vector2(256, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
-min_value = -6.28
-max_value = 6.28
-step = 0.1
-value = -0.28000000000000025
+min_value = -20.0
+max_value = 20.0
+step = 0.2
 
 [node name="HSlider3" type="HSlider" parent="MarginContainer/VBoxContainer" unique_id=1021359426]
 custom_minimum_size = Vector2(256, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
-max_value = 10.0
+min_value = -20.0
+max_value = 20.0
+step = 0.2
 
 [node name="HSlider4" type="HSlider" parent="MarginContainer/VBoxContainer" unique_id=678461110]
 custom_minimum_size = Vector2(256, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
-min_value = -6.28
-max_value = 6.28
+min_value = -6.283
+max_value = 6.283
 step = 0.1
-value = -0.28000000000000025
+value = 6.283
 
-[connection signal="value_changed" from="MarginContainer/VBoxContainer/HSlider" to="Arm" method="SetTheta1"]
-[connection signal="value_changed" from="MarginContainer/VBoxContainer/HSlider2" to="Arm" method="SetTheta2"]
-[connection signal="value_changed" from="MarginContainer/VBoxContainer/HSlider3" to="Arm" method="SetD3"]
-[connection signal="value_changed" from="MarginContainer/VBoxContainer/HSlider4" to="Arm" method="SetTheta4"]
+[node name="Target" type="MeshInstance3D" parent="." unique_id=1277588826]
+mesh = SubResource("SphereMesh_1bvp3")
+surface_material_override/0 = SubResource("StandardMaterial3D_lquwl")
+
+[node name="Frame" parent="Target" unique_id=712761400 instance=ExtResource("3_h2yge")]
+transform = Transform3D(-4.371139e-08, 1, 4.371139e-08, 0, -4.371139e-08, 1, 1, 4.371139e-08, 1.9106855e-15, 0, 0, 0)
+i = "_TARGET"
+
+[node name="MarginContainer2" type="MarginContainer" parent="." unique_id=1597318652]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 64
+theme_override_constants/margin_top = 64
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer2" unique_id=1099264148]
+layout_mode = 2
+
+[node name="OptionButton" type="OptionButton" parent="MarginContainer2/VBoxContainer" unique_id=1606020973]
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "PseudoInverse"
+popup/item_0/id = 0
+popup/item_1/text = "DampedLeastSquaresWithGain"
+popup/item_1/id = 1
+popup/item_2/text = "JacobianTranspose"
+popup/item_2/id = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer2/VBoxContainer" unique_id=1904839961]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer2/VBoxContainer/HBoxContainer" unique_id=1933414973]
+custom_minimum_size = Vector2(96, 0)
+layout_mode = 2
+text = "Step Size"
+
+[node name="HSlider" type="HSlider" parent="MarginContainer2/VBoxContainer/HBoxContainer" unique_id=1317813298]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = 0.001
+max_value = 0.2
+step = 0.001
+value = 0.001
+
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/HSlider" to="." method="SetTargetX"]
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/HSlider2" to="." method="SetTargetY"]
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/HSlider3" to="." method="SetTargetZ"]
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/HSlider4" to="." method="SetTargetTheta"]
+[connection signal="item_selected" from="MarginContainer2/VBoxContainer/OptionButton" to="." method="SetIKMethod"]
+[connection signal="value_changed" from="MarginContainer2/VBoxContainer/HBoxContainer/HSlider" to="." method="SetStepSize"]

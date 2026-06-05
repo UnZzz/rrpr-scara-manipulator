@@ -144,7 +144,7 @@ public partial class Arm : Node3D
         return xe;
     }
 
-    public DenseMatrix GetJacobian(double[] q)
+    private DenseMatrix GetJacobian(double[] q)
     {
         var Jacobian = new NumericalJacobian();
 
@@ -158,6 +158,18 @@ public partial class Arm : Node3D
 
         var j = Jacobian.Evaluate(f, q);
         return DenseMatrix.OfArray(j);
+    }
+
+    public DenseMatrix GetCurrentJacobian()
+    {
+        var q = new double[] { Theta1, Theta2, D3, Theta4 };
+        return GetJacobian(q);
+    }
+
+    public DenseMatrix GetCurrentEEX()
+    {
+        var q = new double[] { Theta1, Theta2, D3, Theta4 };
+        return GetEETaskX(q);
     }
 
 
