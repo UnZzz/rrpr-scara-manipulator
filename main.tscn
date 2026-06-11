@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://0mh7qup573xu" path="res://Main.cs" id="1_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://cdjv863ip6sj6" path="res://arm.tscn" id="1_ig7tw"]
+[ext_resource type="MultiMesh" uid="uid://3gckqtiqa3i7" path="res://multi_mesh.tres" id="2_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://cdkvgfpajr08m" path="res://frame.tscn" id="3_h2yge"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_1bvp3"]
@@ -14,6 +15,7 @@ albedo_color = Color(1, 0, 1, 1)
 
 [node name="Main" type="Node" unique_id=671110331 node_paths=PackedStringArray("Arm", "Target")]
 script = ExtResource("1_0xm2m")
+MultiMesh = ExtResource("2_1bvp3")
 Arm = NodePath("Arm")
 Target = NodePath("Target")
 
@@ -119,6 +121,11 @@ min_value = 0.001
 max_value = 0.2
 step = 0.001
 value = 0.001
+
+[node name="Node3D" type="Node3D" parent="." unique_id=209908785]
+
+[node name="Plot" type="MultiMeshInstance3D" parent="Node3D" unique_id=1242521773]
+multimesh = ExtResource("2_1bvp3")
 
 [connection signal="value_changed" from="MarginContainer/VBoxContainer/HSlider" to="." method="SetTargetX"]
 [connection signal="value_changed" from="MarginContainer/VBoxContainer/HSlider2" to="." method="SetTargetY"]

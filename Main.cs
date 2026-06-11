@@ -14,6 +14,9 @@ public partial class Main : Node
 {
 
 	[Export]
+	public MultiMesh MultiMesh { get; set; }
+
+	[Export]
 	public IKMethod IKMethod { get; set; } = IKMethod.PseudoInverse;
 	public void SetIKMethod(int value)
 	{
@@ -161,6 +164,16 @@ public partial class Main : Node
 				JacobianTransposeIK(stepSize: StepSize);
 				break;
 		}
+
+		PlotEELocation();
+
 	}
 
+	private void PlotEELocation()
+	{
+		var eeLocation = Arm.GetCurrentEEPosition();
+		MultiMesh.VisibleInstanceCount++;
+		var transform = new Transform3D(Basis.Identity, eeLocation);
+		MultiMesh.SetInstanceTransform(MultiMesh.VisibleInstanceCount - 1, transform);
+	}
 }

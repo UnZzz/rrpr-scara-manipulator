@@ -172,6 +172,11 @@ public partial class Arm : Node3D
         return GetEETaskX(q);
     }
 
+    public Vector3 GetCurrentEEPosition()
+    {
+
+        return EndEffector.GlobalTransform.Origin;
+    }
 
     public override void _Process(double delta)
     {
